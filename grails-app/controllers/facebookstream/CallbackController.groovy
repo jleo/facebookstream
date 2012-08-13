@@ -1,5 +1,8 @@
 package facebookstream
 
+import org.atmosphere.cpr.Broadcaster
+import org.atmosphere.cpr.BroadcasterFactory
+
 class CallbackController {
 
     def index() {
@@ -13,38 +16,24 @@ class CallbackController {
         }
     }
 
-    def onUpdate() {
-//        def sample = """{
-//"object": "user",
-//"entry":
-//[
-//    {
-//        "uid": 1335845740,
-//        "changed_fields":
-//        [
-//            "name",
-//            "picture"
-//        ],
-//       "time": 232323
-//    },
-//    {
-//        "uid": 1234,
-//        "changed_fields":
-//        [
-//            "friends"
-//        ],
-//       "time": 232325
-//    }
-//]
-//}"""
-        request.withFormat {
-            json {
-
-            }
-        }
+    def send() {      //test purpose
+        println params.msg
+        Broadcaster b = BroadcasterFactory.getDefault()
+                .lookup("onUpdate",true);
+        b.broadcast(params.msg)
     }
 
-    def addsubscription() {
+    def subscribe(){
+
+    }
+
+    def onUpdate() {
+        Broadcaster b = BroadcasterFactory.getDefault()
+                .lookup("onUpdate",true);
+        b.broadcast(request.reader.text)
+    }
+
+    def addSubscription() {
 
         def appId = grailsApplication.config.facebook.APP_ID
         def tempToken = grailsApplication.config.facebook.TEMP_TOKEN
